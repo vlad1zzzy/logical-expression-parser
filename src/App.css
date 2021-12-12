@@ -1,38 +1,55 @@
-.App {
+html {
+  background-color: #eac095;
+}
+
+.node__root > circle {
+  fill: red;
+}
+
+.node__branch > circle {
+  fill: #517aa6;
+}
+
+.node__leaf > circle {
+  fill: green;
+  transform: scale(1.5);
+}
+
+.node__leaf text {
+  font-weight: bold;
+  fill: black;
+}
+
+text {
+  font-size: 30px;
+}
+
+.input_expression {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.suggests {
+  display: flex;
+  justify-content: center;
+}
+
+.input_expression > input {
+  width: 80vw;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.input_expression > input.warn {
+  background-color: #ffdddd;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.input_expression > input.success {
+  background-color: #84ef49;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.input_expression > .error {
+  color: red;
+  text-align: center;
 }
