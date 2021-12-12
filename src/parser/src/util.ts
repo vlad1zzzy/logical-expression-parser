@@ -1,10 +1,6 @@
-import Tree from "./Tree";
-
 export const enum Token {
     VAR, AND= 'and', OR = 'or', XOR = 'xor', NOT = 'not', LPAREN = '(', RPAREN = ')', END = '$'
 }
-
-export type Result = Tree | "";
 
 export type ParseException = typeof Error;
 

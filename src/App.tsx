@@ -4,13 +4,12 @@ import 'react-tree-graph/dist/style.css'
 import Parser from "./parser/src/Parser";
 import Tree from "./parser/src/Tree";
 import TreeVisual from "react-d3-tree";
-import {Result} from "./parser/src/util";
 import {generateCorrectExpressions, generateIncorrectExpressions} from "./tests/test-generator";
 
 function App() {
     const [state, setState] = useState("(a and b) or not (c xor (a or not b))");
     const [err, setErr] = useState('')
-    const [data, setData] = useState<Result>("")
+    const [data, setData] = useState<Tree>(new Tree(''))
     const inputRef = useRef<HTMLInputElement>(null);
 
     const testsValid = useMemo(() => generateCorrectExpressions(), []);

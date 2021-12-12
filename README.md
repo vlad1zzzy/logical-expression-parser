@@ -43,4 +43,5 @@
 |  not  |    NOT     |
 |   (   |   LPAREN   |
 |   )   |   RPAREN   |
+|  eps  |            |
 |   $   |    END     |

@@ -1,6 +1,6 @@
 import LexicalAnalyzer from "./LexicalAnalyzer";
 import Tree from "./Tree";
-import {Result, Token} from "./util";
+import {Token} from "./util";
 import {AssertionError} from "assert";
 
 class Parser {
@@ -16,52 +16,52 @@ class Parser {
         return tree;
     }
 
-    private E(): Result {
+    private E(): Tree {
         switch (this.lex.getToken()) {
             case Token.VAR:
             case Token.NOT:
             case Token.LPAREN:
-                return new Tree("E", ...Parser.getNonEmpty(this.T(), this.E1()));
+                return new Tree("E", this.T(), this.E1());
             default:
                 throw new AssertionError({message: "Expected variable, 'not' or '('"});
         }
     }
 
-    private E1(): Result {
+    private E1(): Tree {
         switch (this.lex.getToken()) {
             case Token.OR:
             case Token.XOR:
                 const op = new Tree(this.lex.getTokenName());
                 this.lex.nextToken();
-                return new Tree("E'", ...Parser.getNonEmpty(op, this.T(), this.E1()));
+                return new Tree("E'", op, this.T(), this.E1());
             default:
-                return "";
+                return new Tree("E'", new Tree('eps'));
         }
     }
 
-    private T(): Result {
+    private T(): Tree {
         switch (this.lex.getToken()) {
             case Token.VAR:
             case Token.NOT:
             case Token.LPAREN:
-                return new Tree("T", ...Parser.getNonEmpty(this.F(), this.T1()));
+                return new Tree("T", this.F(), this.T1());
             default:
                 throw new AssertionError({message: "Expected variable, 'not' or '('"});
         }
     }
 
-    private T1(): Result {
+    private T1(): Tree {
         switch (this.lex.getToken()) {
             case Token.AND:
                 const op = new Tree(this.lex.getTokenName());
                 this.lex.nextToken();
-                return new Tree("T'", ...Parser.getNonEmpty(op, this.F(), this.T1()));
+                return new Tree("T'", op, this.F(), this.T1());
             default:
-                return "";
+                return new Tree("T'", new Tree('eps'));
         }
     }
 
-    private F(): Result {
+    private F(): Tree {
         switch (this.lex.getToken()) {
             case Token.VAR:
                 const n = new Tree(this.lex.getTokenName());
@@ -70,9 +70,9 @@ class Parser {
             case Token.NOT:
                 const op = new Tree(this.lex.getTokenName());
                 this.lex.nextToken();
-                return new Tree("F", ...Parser.getNonEmpty(op, this.F()));
+                return new Tree("F", op, this.F());
             case Token.LPAREN:
-                const children: Result[] = [new Tree(this.lex.getTokenName())]
+                const children: Tree[] = [new Tree(this.lex.getTokenName())]
                 this.lex.nextToken();
                 children.push(this.E());
                 if (this.lex.getToken() !== Token.RPAREN) {
@@ -80,14 +80,10 @@ class Parser {
                 }
                 children.push(new Tree(Token.RPAREN));
                 this.lex.nextToken();
-                return new Tree("F", ...Parser.getNonEmpty(...children));
+                return new Tree("F", ...children);
             default:
                 throw new AssertionError({message: "Expected variable, 'not' or '('"});
         }
-    }
-
-    private static getNonEmpty(...nodes: Result[]): Tree[] {
-        return nodes.filter(node => node !== '') as Tree[];
     }
 }
 
