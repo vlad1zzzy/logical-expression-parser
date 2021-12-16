@@ -1,5 +1,5 @@
 export const enum Token {
-    VAR, AND= 'and', OR = 'or', XOR = 'xor', NOT = 'not', LPAREN = '(', RPAREN = ')', END = '$'
+    VAR = 'variable', AND = 'and', OR = 'or', XOR = 'xor', NOT = 'not', LPAREN = '(', RPAREN = ')', END = '$'
 }
 
 export type ParseException = typeof Error;

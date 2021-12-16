@@ -11,7 +11,7 @@ class Parser {
         this.lex.nextToken();
         const tree = this.E() as Tree;
         if (this.lex.getToken() !== Token.END) {
-            throw new AssertionError({message: "Invalid expression"});
+            throw new AssertionError({message: `Unexpected token '${this.lex.getToken()}'`});
         }
         return tree;
     }
@@ -23,7 +23,7 @@ class Parser {
             case Token.LPAREN:
                 return new Tree("E", this.T(), this.E1());
             default:
-                throw new AssertionError({message: "Expected variable, 'not' or '('"});
+                this.ExpectedError("variable, 'not' or '('");
         }
     }
 
@@ -34,8 +34,11 @@ class Parser {
                 const op = new Tree(this.lex.getTokenName());
                 this.lex.nextToken();
                 return new Tree("E'", op, this.T(), this.E1());
+            case Token.RPAREN:
+            case Token.END:
+                return new Tree('eps');
             default:
-                return new Tree("E'", new Tree('eps'));
+                this.ExpectedError("operation");
         }
     }
 
@@ -46,7 +49,7 @@ class Parser {
             case Token.LPAREN:
                 return new Tree("T", this.F(), this.T1());
             default:
-                throw new AssertionError({message: "Expected variable, 'not' or '('"});
+                this.ExpectedError("variable, 'not' or '('");
         }
     }
 
@@ -56,8 +59,13 @@ class Parser {
                 const op = new Tree(this.lex.getTokenName());
                 this.lex.nextToken();
                 return new Tree("T'", op, this.F(), this.T1());
+            case Token.OR:
+            case Token.XOR:
+            case Token.RPAREN:
+            case Token.END:
+                return new Tree('eps');
             default:
-                return new Tree("T'", new Tree('eps'));
+                this.ExpectedError("operation");
         }
     }
 
@@ -82,8 +90,16 @@ class Parser {
                 this.lex.nextToken();
                 return new Tree("F", ...children);
             default:
-                throw new AssertionError({message: "Expected variable, 'not' or '('"});
+                this.ExpectedError("variable, 'not' or '('");
         }
+    }
+
+    private ExpectedError(expectation: string): never {
+        const token = this.lex.getToken() === Token.END
+            ? "'end of expression'"
+            : `'${this.lex.getToken()}'`;
+
+        throw new AssertionError({message: `Expected ${expectation}, but got ${token}`});
     }
 }
 
